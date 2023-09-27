@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export const config = {
   matcher: [
@@ -16,6 +16,12 @@ export const config = {
 };
 
 export default async function middleware(
+  request: NextRequest
 ): Promise<NextResponse> {
-    return NextResponse.next();
+  if (request.nextUrl.pathname.startsWith("/me")) {
+    return NextResponse.rewrite(
+      new URL(request.nextUrl.pathname.replace("me", "users"), request.url)
+    );
+  }
+  return NextResponse.next();
 }
